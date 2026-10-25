@@ -177,8 +177,8 @@ sensors:
     address: 182
     count: 1
     scale: 0.1
-    unit_of_measurement: W
-    device_class: power
+    unit_of_measurement: ºC
+    device_class: temperature
     state_class: measurement
 
   # Inverter and load
@@ -201,3 +201,16 @@ sensors:
     unit_of_measurement: W
     device_class: power
     state_class: measurement
+
+#Energy totals
+
+  - name: PV Production Total
+    unique_id: pv_energy_total
+    register_type: holding
+    address: 96
+    count: 2
+    word_order: low_high
+    scale: 0.1
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
