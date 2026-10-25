@@ -121,8 +121,8 @@ class DeyeModbusCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     async def _read_grouped(self, regs: list[RegisterDef], out: dict[str, Any], fn):
         regs = sorted(regs, key=lambda r: r.address)
-        GAP = 8          # merge registers within this many words into one read
-        MAX_WORDS = 110  # keep each Modbus frame comfortably below the 125 limit
+        GAP = 0          # merge registers within this many words into one read
+        MAX_WORDS = 5  # keep each Modbus frame comfortably below the 125 limit
         start = end = None
         acc: list[RegisterDef] = []
         for r in regs:
@@ -200,75 +200,16 @@ class DeyeModbusCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     # ------------------------------------------------------------------ writes
     async def write_single_register(self, address: int, value: int) -> bool:
-        a = self._addr(address)
-        client = await self._ensure_client()
-        wire = int(value) & 0xFFFF
-        for variant in (
-            lambda: client.write_register(a, wire, slave=self._unit_id),
-            lambda: client.write_register(a, wire, self._unit_id),
-            lambda: client.write_register(address=a, value=wire, unit=self._unit_id),
-            lambda: client.write_register(a, wire),
-        ):
-            try:
-                rr = await variant()
-                if getattr(rr, "isError", lambda: False)():
-                    continue
-                await self.async_request_refresh()
-                return True
-            except TypeError:
-                continue
-            except Exception:  # noqa: BLE001
-                return False
-        return False
+        raise RuntimeError("Deye Modbus integration is read-only")
 
     async def write_multiple_registers(self, address: int, values: list[int]) -> bool:
-        a = self._addr(address)
-        client = await self._ensure_client()
-        vals = [int(v) & 0xFFFF for v in values]
-        for variant in (
-            lambda: client.write_registers(a, vals, slave=self._unit_id),
-            lambda: client.write_registers(a, vals, self._unit_id),
-            lambda: client.write_registers(address=a, values=vals, unit=self._unit_id),
-            lambda: client.write_registers(a, vals),
-        ):
-            try:
-                rr = await variant()
-                if getattr(rr, "isError", lambda: False)():
-                    continue
-                await self.async_request_refresh()
-                return True
-            except TypeError:
-                continue
-            except Exception:  # noqa: BLE001
-                return False
-        return False
+        raise RuntimeError("Deye Modbus integration is read-only")
 
     async def write_u32(self, base_address: int, value: int, word_order: str = "high_low") -> bool:
-        v = int(value) & 0xFFFFFFFF
-        hi, lo = (v >> 16) & 0xFFFF, v & 0xFFFF
-        values = [hi, lo] if word_order == "high_low" else [lo, hi]
-        return await self.write_multiple_registers(base_address, values)
+        raise RuntimeError("Deye Modbus integration is read-only")
 
     async def write_coil(self, address: int, value: int) -> bool:
-        a = self._addr(address)
-        client = await self._ensure_client()
-        for variant in (
-            lambda: client.write_coil(a, bool(value), slave=self._unit_id),
-            lambda: client.write_coil(a, bool(value), self._unit_id),
-            lambda: client.write_coil(address=a, value=bool(value), unit=self._unit_id),
-            lambda: client.write_coil(a, bool(value)),
-        ):
-            try:
-                rr = await variant()
-                if getattr(rr, "isError", lambda: False)():
-                    continue
-                await self.async_request_refresh()
-                return True
-            except TypeError:
-                continue
-            except Exception:  # noqa: BLE001
-                return False
-        return False
+        raise RuntimeError("Deye Modbus integration is read-only")
 
     async def async_close(self):
         try:

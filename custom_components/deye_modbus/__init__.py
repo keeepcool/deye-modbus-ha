@@ -19,7 +19,7 @@ from .coordinator import DeyeModbusCoordinator, RegisterDef
 from .mapping import load_register_mapping
 
 _LOGGER = logging.getLogger(__name__)
-PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SWITCH, Platform.SELECT, Platform.NUMBER]
+PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 # This integration is set up only via the UI config flow (no YAML config).
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
@@ -113,26 +113,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await coordinator.async_config_entry_first_refresh()
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    async def _svc_write_register(call: ServiceCall):
-        ok = await coordinator.write_single_register(int(call.data["address"]), int(call.data["value"]))
-        _LOGGER.info("write_register -> %s", ok)
-
-    async def _svc_write_registers(call: ServiceCall):
-        addr = int(call.data["address"])
-        values = [int(v) for v in call.data["values"]]
-        ok = await coordinator.write_multiple_registers(addr, values)
-        _LOGGER.info("write_registers -> %s", ok)
-
-    async def _svc_write_u32(call: ServiceCall):
-        addr = int(call.data["address"])
-        value = int(call.data["value"])
-        word_order = call.data.get("word_order", "high_low")
-        ok = await coordinator.write_u32(addr, value, word_order)
-        _LOGGER.info("write_u32 -> %s", ok)
-
-    hass.services.async_register(DOMAIN, "write_register", _svc_write_register)
-    hass.services.async_register(DOMAIN, "write_registers", _svc_write_registers)
-    hass.services.async_register(DOMAIN, "write_u32", _svc_write_u32)
     entry.async_on_unload(entry.add_update_listener(_async_reload_entry))
     return True
 

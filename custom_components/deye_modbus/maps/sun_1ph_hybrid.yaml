@@ -1,0 +1,203 @@
+# =====================================================================
+# Deye single-phase low-voltage hybrid inverter register map
+# Device type ? - SUN-*K-SG05LP1 AM2 - Tested on SUN-6K-SG05LP1 AM2 EU
+#
+# Source: https://github.com/tema-mazy/deye-modbus-test 
+# and https://github.com/VMrenato/homeassistant-deye-tcan485-esphome/
+#
+# Decoding notes:
+#   * register_type: holding  -> read with FC03 (everything on this inverter)
+#   * count: 2                -> 32-bit value across two registers
+#   * word_order: low_high    -> low word sits at the base address (Deye energy
+#                                counters are little-endian by word)
+#   * temperatures            -> offset 1000, scale 0.1  =>  (raw-1000)*0.1 = °C
+#   * signed: true            -> value is two's-complement (marked "S16" in doc)
+# =====================================================================
+sensors:
+  # Status
+  - name: Run State
+    unique_id: run_state
+    register_type: holding
+    address: 59
+    count: 1
+    options:
+      0: standby
+      1: self-check
+      2: normal
+      3: alarm
+      4: fault
+
+  # PV1
+  - name: PV1 Voltage
+    unique_id: pv1_voltage
+    register_type: holding
+    address: 109
+    count: 1
+    scale: 0.1
+    unit_of_measurement: V
+    device_class: voltage
+    state_class: measurement
+
+  - name: PV1 Current
+    unique_id: pv1_current
+    register_type: holding
+    address: 110
+    count: 1
+    scale: 0.1
+    unit_of_measurement: A
+    device_class: current
+    state_class: measurement
+
+  - name: PV1 Power
+    unique_id: pv1_power
+    register_type: holding
+    address: 186
+    count: 1
+    scale: 1
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+
+  # PV2
+  - name: PV2 Voltage
+    unique_id: pv2_voltage
+    register_type: holding
+    address: 111
+    count: 1
+    scale: 0.1
+    unit_of_measurement: V
+    device_class: voltage
+    state_class: measurement
+
+  - name: PV2 Current
+    unique_id: pv2_current
+    register_type: holding
+    address: 112
+    count: 1
+    scale: 0.1
+    unit_of_measurement: A
+    device_class: current
+    state_class: measurement
+
+  - name: PV2 Power
+    unique_id: pv2_power
+    register_type: holding
+    address: 187
+    count: 1
+    scale: 1
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+
+  # Grid
+  - name: Grid Voltage
+    unique_id: grid_voltage
+    register_type: holding
+    address: 150
+    count: 1
+    scale: 0.1
+    unit_of_measurement: V
+    device_class: voltage
+    state_class: measurement
+
+  - name: Grid Frequency
+    unique_id: grid_frequency
+    register_type: holding
+    address: 79
+    count: 1
+    scale: 0.01
+    unit_of_measurement: Hz
+    device_class: frequency
+    state_class: measurement
+
+  - name: Grid Power
+    unique_id: grid_power
+    register_type: holding
+    address: 169
+    count: 1
+    scale: 1
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+
+  - name: Grid CT Power
+    unique_id: grid_ct_power
+    register_type: holding
+    address: 172
+    count: 1
+    scale: 1
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+
+  # Battery
+  - name: Battery SOC
+    unique_id: battery_soc
+    register_type: holding
+    address: 184
+    count: 1
+    scale: 1
+    unit_of_measurement: "%"
+    device_class: battery
+    state_class: measurement
+
+  - name: Battery Voltage
+    unique_id: battery_voltage
+    register_type: holding
+    address: 183
+    count: 1
+    scale: 0.01
+    unit_of_measurement: V
+    device_class: voltage
+    state_class: measurement
+
+  - name: Battery Current
+    unique_id: battery_current
+    register_type: holding
+    address: 191
+    count: 1
+    scale: 0.01
+    unit_of_measurement: A
+    device_class: current
+    state_class: measurement
+
+  - name: Battery Power
+    unique_id: battery_power
+    register_type: holding
+    address: 190
+    count: 1
+    scale: 1
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+
+  - name: Battery Temperature
+    unique_id: battery_temperature
+    register_type: holding
+    address: 182
+    count: 1
+    scale: 0.1
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+
+  # Inverter and load
+  - name: Inverter Power
+    unique_id: inverter_power
+    register_type: holding
+    address: 175
+    count: 1
+    scale: 1
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+
+  - name: Load Power
+    unique_id: load_power
+    register_type: holding
+    address: 178
+    count: 1
+    scale: 1
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement

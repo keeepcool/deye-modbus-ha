@@ -32,9 +32,15 @@ MODELS: Final[dict[str, dict[str, str]]] = {
         "manufacturer": "Deye",
         "model": "SUN-xxK-SG04LP3",
     },
+    "sun_6k_sg05lp1_1ph": {
+        "label": "Deye SUN-6K-SG05LP1-EU-AM2-P (single-phase hybrid)",
+        "map": "sun_1ph_hybrid.yaml",
+        "manufacturer": "Deye",
+        "model": "SUN-6K-SG05LP1-EU-AM2-P",
+    },
 }
 
-DEFAULT_MODEL: Final = "sun12k_sg05lp3"
+DEFAULT_MODEL: Final = "sun_6k_sg05lp1_1ph"
 
 
 def model_options() -> dict[str, str]:
