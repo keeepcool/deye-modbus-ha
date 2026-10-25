@@ -12,6 +12,7 @@ from typing import Final
 # Three-phase low-voltage hybrid protocol (device type 0x0500).
 # The SUN-*K-SG04LP3 / SG05LP3 families share the same Modbus register map.
 _THREE_PHASE_MAP: Final = "sun_3ph_hybrid.yaml"
+_SINGLE_PHASE_MAP: Final = "sun_1ph_hybrid.yaml"
 
 MODELS: Final[dict[str, dict[str, str]]] = {
     "sun12k_sg05lp3": {
@@ -34,7 +35,7 @@ MODELS: Final[dict[str, dict[str, str]]] = {
     },
     "sun_6k_sg05lp1_1ph": {
         "label": "Deye SUN-6K-SG05LP1-EU-AM2-P (single-phase hybrid)",
-        "map": "sun_1ph_hybrid.yaml",
+        "map": _SINGLE_PHASE_MAP,
         "manufacturer": "Deye",
         "model": "SUN-6K-SG05LP1-EU-AM2-P",
     },
