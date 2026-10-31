@@ -20,10 +20,10 @@ CONF_ADDR_OFFSET: Final = "address_offset"
 # --- Defaults ---
 # Deye WiFi/LAN loggers expose Modbus TCP on 8899 by default. Third-party
 # RS485<->TCP gateways (Elfin EW11, USR, ...) usually use 502.
-DEFAULT_PORT: Final = 8899
+DEFAULT_PORT: Final = 502
 DEFAULT_UNIT_ID: Final = 1
 DEFAULT_SCAN_SECONDS: Final = 15
-MIN_SCAN_SECONDS: Final = 5
+MIN_SCAN_SECONDS: Final = 10
 MAX_SCAN_SECONDS: Final = 300
 DEFAULT_TRANSPORT: Final = "tcp"
 DEFAULT_ADDR_OFFSET: Final = 0

@@ -31,8 +31,9 @@ class RegisterDef:
 
     name: str
     unique_id: str
-    register_type: str = "holding"          # "holding" (0x03) or "input" (0x04)
+    register_type: str = "holding"           # "holding" (0x03) or "input" (0x04)
     address: int = 0
+    second_address: int | None = None        # Optional second word for non contiguous 32-bit values
     count: int = 1                           # 1 = 16-bit, 2 = 32-bit
     scale: float = 1.0
     offset: float = 0.0                      # raw is (value - offset) before scaling
@@ -119,24 +120,50 @@ class DeyeModbusCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             except Exception as err:  # noqa: BLE001
                 raise UpdateFailed(err) from err
 
+
     async def _read_grouped(self, regs: list[RegisterDef], out: dict[str, Any], fn):
-        regs = sorted(regs, key=lambda r: r.address)
-        GAP = 0          # merge registers within this many words into one read
-        MAX_WORDS = 5  # keep each Modbus frame comfortably below the 125 limit
+        # Read non-contiguous registers separately.
+        special = [r for r in regs if r.second_address is not None]
+        regular = [r for r in regs if r.second_address is None]
+
+        for r in special:
+            if r.count != 2:
+                raise ValueError(
+                    f"{r.name}: second_address requires count: 2"
+                )
+
+            first = await fn(r.address, 1)
+            second = await fn(r.second_address, 1)
+
+            if first is None or second is None or len(first) < 1 or len(second) < 1:
+                out[r.unique_id] = None
+            else:
+                out[r.unique_id] = self._decode(
+                    r, [first[0], second[0]], r.address
+                )
+
+        # Normal contiguous registers retain the existing grouped-read logic.
+        regs = sorted(regular, key=lambda r: r.address)
+        GAP = 0
+        MAX_WORDS = 5
         start = end = None
         acc: list[RegisterDef] = []
+
         for r in regs:
             if start is None:
                 start, end, acc = r.address, r.address + r.count, [r]
                 continue
+
             if r.address <= end + GAP and (r.address + r.count - start) <= MAX_WORDS:
                 end = max(end, r.address + r.count)
                 acc.append(r)
             else:
                 await self._read_window(fn, out, start, end, acc)
                 start, end, acc = r.address, r.address + r.count, [r]
+
         if start is not None:
             await self._read_window(fn, out, start, end, acc)
+
 
     async def _read_window(self, fn, out, start, end, regs):
         raw = await fn(self._addr(start), end - start)
@@ -146,8 +173,13 @@ class DeyeModbusCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def _decode(self, r: RegisterDef, raw, start) -> Any:
         if not raw:
             return None
-        off = r.address - start
-        chunk = raw[off:off + r.count]
+        
+        if r.second_address is not None:
+            chunk = raw[:2]
+        else:
+            off = r.address - start
+            chunk = raw[off:off + r.count]
+
         if len(chunk) < r.count:
             return None
         if r.count == 1:

@@ -26,7 +26,7 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 # Fields accepted by RegisterDef - anything else in the YAML is ignored.
 _REGISTER_FIELDS = {
-    "name", "unique_id", "register_type", "address", "count", "scale", "offset",
+    "name", "unique_id", "register_type", "address", "second_address","count", "scale", "offset",
     "unit_of_measurement", "device_class", "state_class", "signed", "word_order",
     "options", "mask", "icon", "enabled_default", "precision",
 }
