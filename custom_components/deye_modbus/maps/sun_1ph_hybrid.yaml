@@ -113,6 +113,7 @@ sensors:
     count: 1
     scale: 0.01
     unit_of_measurement: Hz
+    precision: 2
     device_class: frequency
     state_class: measurement
 
@@ -250,8 +251,8 @@ sensors:
     device_class: temperature
     state_class: measurement
 
-  - name: Inverter ambient temperature
-    unique_id: inverter_ambient_temp
+  - name: Inverter external temperature sensor
+    unique_id: inverter_external_temp
     register_type: holding
     address: 95
     count: 1

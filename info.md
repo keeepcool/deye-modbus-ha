@@ -1,19 +1,22 @@
 # Deye Modbus (Hybrid Inverter)
 
-Local Home Assistant integration for **Deye three-phase hybrid inverters** — SUN-\*K-SG04LP3 / SG05LP3 family, including the **SUN-12K-SG05LP3**. It polls the inverter over **Modbus TCP** directly, either through the Deye WiFi/LAN logger (default port **8899**) or an RS485-to-TCP gateway (port **502**). No cloud, no SolarMAN account.
+Local Home Assistant integration for **Deye single-phase hybrid inverters** (SG05LP1 family, tested on SUN-6K-SG05 LP1 AM2 EU) and **Deye three-phase hybrid inverters** (SUN-\*K-SG04LP3 / SG05LP3 family, including the SUN-12K-SG05LP3).
+ It polls the inverter over **Modbus TCP** directly, either through the Deye WiFi/LAN logger (default port **8899**) or an RS485-to-TCP gateway (port **502**). 
+ No cloud, no SolarMAN account.
 
 ## What you get
 
 - 100% local polling — nothing leaves your network.
 - Sensors: PV strings, battery (SOC/power/temperature), grid import/export, per-phase grid/inverter/load, temperatures, plus daily and lifetime energy counters for the Energy dashboard.
-- Controls: work mode, solar sell, grid/generator charge, battery current & SOC limits, max sell power, and 6-slot time-of-use programming.
 - Guided config flow (pick model → host/port/unit ID/scan interval) and an options flow for transport, address offset and serial params.
-- Services: `write_register`, `write_registers`, `write_u32` for advanced access.
+- **Read-only operation** - This fork is intended for monitoring only, if you have an interest in that please refer to the original project: https://github.com/Developer089/deye-modbus-ha 
 
 Some entities (PV3/PV4, per-phase detail, TOU slots) ship **disabled by default** — enable them in the entity settings.
 
 ## Supported models
 
+- Deye SUN-6K-SG05LP1 (1-phase hybrid)
+- Deye SUN-3.6/5/7/7.6/8/10K-SG05LP1 (1-phase hybrid) - Not tested
 - Deye SUN-12K-SG05LP3 (3-phase hybrid)
 - Deye SUN-5/6/8/10/12K-SG05LP3 (3-phase hybrid)
 - Deye SUN-5/6/8/10/12K-SG04LP3 (3-phase hybrid)
@@ -26,4 +29,4 @@ Some entities (PV3/PV4, per-phase detail, TOU slots) ship **disabled by default*
 
 > Note: the inverter accepts only **one Modbus connection at a time**, so this conflicts with SolarMAN cloud logging and other Modbus pollers.
 
-See the [README](https://github.com/Developer089/deye-modbus-ha) for the full entity list, options, services and troubleshooting.
+See the [README](https://github.com/keeepcool/deye-modbus-ha) for the full entity list, options, services and troubleshooting.
