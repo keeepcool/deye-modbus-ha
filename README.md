@@ -38,7 +38,7 @@ Communication is performed locally over Modbus TCP, either through the inverter'
 
 1. In Home Assistant go to **HACS**.
 2. Open the top-right menu **⋮ → Custom repositories**.
-3. Add the repository URL `https://github.com/witxo/deye-modbus-ha` and choose category **Integration**.
+3. Add the repository URL `https://github.com/witxo/deye-sg5-modbus-ha` and choose category **Integration**.
 4. Find **Deye Modbus (Hybrid Inverter)** in the list and click **Download / Install**.
 5. **Restart Home Assistant.**
 6. Go to **Settings ▸ Devices & Services ▸ Add Integration** and search for **Deye Modbus**.

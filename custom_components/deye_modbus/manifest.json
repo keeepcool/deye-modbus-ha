@@ -6,10 +6,10 @@
     "@witxo"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/witxo/deye-modbus-ha",
+  "documentation": "https://github.com/witxo/deye-sg5-modbus-ha",
   "integration_type": "device",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/witxo/deye-modbus-ha/issues",
+  "issue_tracker": "https://github.com/witxo/deye-sg5-modbus-ha/issues",
   "loggers": [
     "pymodbus",
     "custom_components.deye_modbus"
